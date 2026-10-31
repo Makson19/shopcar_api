@@ -21,6 +21,36 @@ class UsuarioService {
 
     return user;
   }
+
+  async findMany(page, per, orderBy, order) {
+    if (order !== "asc" && order !== "desc") {
+      throw new ApiError("O parâmetro 'order' deve ser 'asc' ou 'desc'.", 400);
+    }
+
+    const newPer = Number(per);
+    const currentPage = Number(page);
+    const [usuarios, total] = await Promise.all([
+      prisma.usuario.findMany({
+        select: { id: true, nome: true, email: true },
+        skip: (currentPage - 1),
+        take: newPer,
+        orderBy: {
+          [orderBy]: order
+        }
+      }),
+      prisma.usuario.count()
+    ]);
+
+    const totalOfPages = Math.ceil(total / per);
+    const pagination = {
+      page: currentPage,
+      per: newPer,
+      total,
+      totalOfPages
+    };
+
+    return { data: usuarios, pagination }
+  }
 }
 
 module.exports = new UsuarioService();

@@ -6,5 +6,6 @@ const { usuarioCreateSchema } = require("../schemas/usuarioSchema");
 const router = express.Router();
 
 router.post("/usuarios", validate(usuarioCreateSchema), usuarioController.create);
+router.get("/usuarios", usuarioController.findMany);
 
 module.exports = router;
