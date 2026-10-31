@@ -51,6 +51,19 @@ class UsuarioService {
 
     return { data: usuarios, pagination }
   }
+
+  async findById(id) {
+    const usuario = await prisma.usuario.findUnique({
+      where: { id: Number(id) },
+      select: { id: true, nome: true, email: true }
+    });
+
+    if (!usuario) {
+      throw new ApiError("Usuário não encontrado.", 404);
+    }
+
+    return usuario;
+  }
 }
 
 module.exports = new UsuarioService();
