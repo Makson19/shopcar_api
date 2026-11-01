@@ -95,6 +95,18 @@ class UsuarioService {
       return userUpdated
     }
   }
+
+  async delete(id) {
+    const userAlreadyExists = await prisma.usuario.findUnique({
+      where: { id: Number(id) }
+    });
+
+    if (!userAlreadyExists) {
+      throw new ApiError("Usuário não encontrado.", 404);
+    }
+
+    return await prisma.usuario.delete({ where: { id: Number(id) } });
+  }
 }
 
 module.exports = new UsuarioService();

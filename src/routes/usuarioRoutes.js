@@ -9,5 +9,6 @@ router.post("/usuarios", validate(usuarioCreateSchema), usuarioController.create
 router.get("/usuarios", usuarioController.findMany);
 router.get("/usuarios/:id", usuarioController.findById);
 router.put("/usuarios/:id", usuarioController.update);
+router.delete("/usuarios/:id", usuarioController.delete);
 
 module.exports = router;

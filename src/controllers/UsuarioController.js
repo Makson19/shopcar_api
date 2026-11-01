@@ -28,6 +28,12 @@ class UsuarioController {
     const user = await usuarioService.update(id, req.body);
     return res.status(200).json(user);
   }
+
+  async delete(req, res) {
+    const { id } = req.params;
+    await usuarioService.delete(id);
+    return res.status(204).send();
+  }
 }
 
 module.exports = new UsuarioController();
