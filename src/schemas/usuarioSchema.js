@@ -6,6 +6,12 @@ const usuarioCreateSchema = z.object({
   senha: z.string("Senha obrigatória.").min(6, "A senha dever ter no mínimo 6 caracteres.")
 });
 
+const usuarioUpdateSchema = z.object({
+  nome: z.string().trim().min(3, "Nome muito curto.").optional(),
+  email: z.string().trim().email("E-mail inválido.").optional()
+});
+
 module.exports = {
   usuarioCreateSchema,
+  usuarioUpdateSchema
 };

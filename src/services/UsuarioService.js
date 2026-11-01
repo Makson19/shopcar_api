@@ -6,7 +6,7 @@ class UsuarioService {
   async create(data) {
     const { nome, email, senha } = data;
     const userAlreadyExists = await prisma.usuario.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (userAlreadyExists) {
@@ -16,7 +16,7 @@ class UsuarioService {
     const hashedPassword = await bcrypt.hash(senha, 10);
     const user = await prisma.usuario.create({
       data: { nome, email, senha: hashedPassword },
-      select: { id: true, nome: true, email: true, dataCadastro: true }
+      select: { id: true, nome: true, email: true, dataCadastro: true },
     });
 
     return user;
@@ -32,13 +32,13 @@ class UsuarioService {
     const [usuarios, total] = await Promise.all([
       prisma.usuario.findMany({
         select: { id: true, nome: true, email: true },
-        skip: (currentPage - 1),
+        skip: currentPage - 1,
         take: newPer,
         orderBy: {
-          [orderBy]: order
-        }
+          [orderBy]: order,
+        },
       }),
-      prisma.usuario.count()
+      prisma.usuario.count(),
     ]);
 
     const totalOfPages = Math.ceil(total / per);
@@ -46,16 +46,16 @@ class UsuarioService {
       page: currentPage,
       per: newPer,
       total,
-      totalOfPages
+      totalOfPages,
     };
 
-    return { data: usuarios, pagination }
+    return { data: usuarios, pagination };
   }
 
   async findById(id) {
     const usuario = await prisma.usuario.findUnique({
       where: { id: Number(id) },
-      select: { id: true, nome: true, email: true }
+      select: { id: true, nome: true, email: true },
     });
 
     if (!usuario) {
@@ -72,33 +72,34 @@ class UsuarioService {
     }
 
     const userAlreadyExists = await prisma.usuario.findUnique({
-      where: { id: Number(id) }
+      where: { id: Number(id) },
     });
+
     if (!userAlreadyExists) {
       throw new ApiError("Usuário não encontrado.", 404);
     }
 
     if (email) {
       const emailAlreadyExists = await prisma.usuario.findUnique({
-        where: { email }
+        where: { email },
       });
 
       if (emailAlreadyExists) {
         throw new ApiError("E-mail já em uso.", 400);
       }
-
-      const userUpdated = await prisma.usuario.update({
-        where: { id: Number(id) },
-        data,
-        select: { id: true, nome: true, email: true }
-      });
-      return userUpdated
     }
+
+    const userUpdated = await prisma.usuario.update({
+      where: { id: Number(id) },
+      data,
+      select: { id: true, nome: true, email: true },
+    });
+    return userUpdated;
   }
 
   async delete(id) {
     const userAlreadyExists = await prisma.usuario.findUnique({
-      where: { id: Number(id) }
+      where: { id: Number(id) },
     });
 
     if (!userAlreadyExists) {
