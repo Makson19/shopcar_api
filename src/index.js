@@ -1,6 +1,6 @@
 require("dotenv/config");
 const express = require("express");
-const errorMiddleware = require("./middlewares/error.middleware");
+const errorMiddleware = require("./middlewares/errorMiddleware");
 const usuarioRouter = require("./routes/usuarioRoutes");
 
 const PORT = process.env.PORT;
