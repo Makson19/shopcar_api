@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const gerarToken = ({ id, nome, email }) => {
   return jwt.sign(
-    { nome, email },
+    { id, nome, email },
     process.env.JWT_SECRET,
     {
       subject: String(id),
