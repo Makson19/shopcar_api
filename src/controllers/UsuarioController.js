@@ -13,14 +13,20 @@ class UsuarioController {
     orderBy ||= "id";
     order ||= "desc";
 
-    const usuarios = await usuarioService.findMany(page, per, orderBy, order);
-    return res.status(200).json(usuarios);
+    const users = await usuarioService.findMany(page, per, orderBy, order);
+    return res.status(200).json(users);
   }
 
   async findById(req, res) {
     const { id } = req.params;
-    const usuario = await usuarioService.findById(id);
-    return res.status(200).json(usuario);
+    const user = await usuarioService.findById(id);
+    return res.status(200).json(user);
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
+    const user = await usuarioService.update(id, req.body);
+    return res.status(200).json(user);
   }
 }
 

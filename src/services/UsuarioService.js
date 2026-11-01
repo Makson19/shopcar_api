@@ -64,6 +64,37 @@ class UsuarioService {
 
     return usuario;
   }
+
+  async update(id, data) {
+    const { nome, email } = data;
+    if (!nome && !email) {
+      throw new ApiError("Informe ao menos um campo para atualizar.", 400);
+    }
+
+    const userAlreadyExists = await prisma.usuario.findUnique({
+      where: { id: Number(id) }
+    });
+    if (!userAlreadyExists) {
+      throw new ApiError("Usuário não encontrado.", 404);
+    }
+
+    if (email) {
+      const emailAlreadyExists = await prisma.usuario.findUnique({
+        where: { email }
+      });
+
+      if (emailAlreadyExists) {
+        throw new ApiError("E-mail já em uso.", 400);
+      }
+
+      const userUpdated = await prisma.usuario.update({
+        where: { id: Number(id) },
+        data,
+        select: { id: true, nome: true, email: true }
+      });
+      return userUpdated
+    }
+  }
 }
 
 module.exports = new UsuarioService();
