@@ -37,6 +37,20 @@ class VeiculoService {
     });
     return vehicle;
   }
+
+  async findMany(disponivel) {
+    const isAvailable = disponivel === "true";
+    if (disponivel !== "true" && disponivel !== "false") {
+      throw new ApiError("O parâmetro 'disponivel' deve ser 'true' ou 'false'.", 400);
+    }
+
+    const vehicles = await prisma.veiculo.findMany({
+      where: { disponivel: isAvailable },
+      orderBy: { id: "desc" }
+    });
+
+    return vehicles;
+  }
 }
 
 module.exports = new VeiculoService();
