@@ -38,18 +38,34 @@ class VeiculoService {
     return vehicle;
   }
 
-  async findMany(disponivel) {
+  async findMany(disponivel, page, per) {
     const isAvailable = disponivel === "true";
-    if (disponivel !== "true" && disponivel !== "false") {
+    const newPer = Number(per);
+    const currentPage = Number(page);
+
+    if (disponivel && disponivel !== "true" && disponivel !== "false") {
       throw new ApiError("O parâmetro 'disponivel' deve ser 'true' ou 'false'.", 400);
     }
 
-    const vehicles = await prisma.veiculo.findMany({
-      where: { disponivel: isAvailable },
-      orderBy: { id: "desc" }
-    });
+    const [veiculos, total] = await Promise.all([
+      prisma.veiculo.findMany({
+        where: disponivel ? { disponivel: isAvailable } : {},
+        orderBy: { id: "desc" },
+        skip: (currentPage - 1) * newPer,
+        take: newPer,
+      }),
+      prisma.veiculo.count()
+    ]);
 
-    return vehicles;
+    const totalOfPages = Math.ceil(total / per);
+    const pagination = {
+      page: currentPage,
+      per: newPer,
+      total,
+      totalOfPages,
+    };
+
+    return { data: veiculos, pagination };
   }
 }
 

@@ -7,8 +7,10 @@ class VeiculoController {
   }
 
   async findMany(req, res) {
-    const disponivel = req.query.disponivel;
-    const vehicles = await veiculoService.findMany(disponivel);
+    let { disponivel, page, per } = req.query;
+    page ||= 1;
+    per ||= 10;
+    const vehicles = await veiculoService.findMany(disponivel, page, per);
     return res.status(200).json(vehicles);
   }
 }
