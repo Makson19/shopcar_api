@@ -18,7 +18,15 @@ class AuthService {
       throw new ApiError("E-mail ou senha inválidos.", 401);
     }
 
-    return gerarToken(usuario);
+    const token = gerarToken(usuario);
+    const userData = {
+      id: usuario.id,
+      nome: usuario.nome,
+      email,
+      token
+    };
+
+    return userData;
   }
 }
 

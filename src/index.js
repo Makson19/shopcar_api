@@ -5,7 +5,7 @@ const authRouter = require("./routes/authRoutes");
 const usuarioRouter = require("./routes/usuarioRoutes");
 const veiculoRouter = require("./routes/veiculoRoutes");
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.json());

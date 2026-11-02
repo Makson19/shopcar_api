@@ -27,12 +27,16 @@ class UsuarioService {
       throw new ApiError("O parâmetro 'order' deve ser 'asc' ou 'desc'.", 400);
     }
 
+    if (orderBy !== "id" && orderBy !== "nome" && orderBy !== "email" && orderBy !== "dataCadastro") {
+      throw new ApiError("O parâmetro 'orderBy' deve ser 'id', 'nome', 'email' ou 'dataCadastro'.", 400);
+    }
+
     const newPer = Number(per);
     const currentPage = Number(page);
     const [usuarios, total] = await Promise.all([
       prisma.usuario.findMany({
         select: { id: true, nome: true, email: true },
-        skip: currentPage - 1,
+        skip: (currentPage - 1) * newPer,
         take: newPer,
         orderBy: {
           [orderBy]: order,

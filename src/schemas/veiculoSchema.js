@@ -1,7 +1,6 @@
 const z = require('zod');
 
 const veiculoCreateSchema = z.object({
-  nome: z.string("O campo 'nome' é obrigatório."),
   marca: z.string("O campo 'marca' é obrigatório."),
   modelo: z.string("O campo 'modelo' é obrigatório."),
   placa: z.string("O campo 'placa' é obrigatório."),
