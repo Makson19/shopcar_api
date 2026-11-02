@@ -20,6 +20,12 @@ class LocacaoController {
     const locacao = await locacaoService.findById(id, req.user.id);
     return res.status(200).json(locacao);
   }
+
+  async finish(req, res) {
+    const { id } = req.params;
+    const locacao = await locacaoService.finish(id, req.user.id);
+    return res.status(200).json(locacao);
+  }
 }
 
 module.exports = new LocacaoController();

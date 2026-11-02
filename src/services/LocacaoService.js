@@ -163,6 +163,66 @@ class LocacaoService {
 
     return locacao;
   }
+
+  async finish(id, usuarioId) {
+    const locacaoId = Number(id);
+    if (!Number.isInteger(locacaoId) || locacaoId <= 0) {
+      throw new ApiError("O parâmetro 'id' deve ser um número inteiro positivo.", 400);
+    }
+
+    const locacao = await prisma.$transaction(async (tx) => {
+      const locacaoExistente = await tx.locacao.findUnique({
+        where: { id: locacaoId }
+      });
+
+      if (!locacaoExistente || locacaoExistente.usuarioId !== usuarioId) {
+        throw new ApiError("Locação não encontrada.", 404);
+      }
+
+      if (locacaoExistente.status === StatusLocacao.FINALIZADA) {
+        throw new ApiError("Locação já finalizada.", 409);
+      }
+
+      const locacaoFinalizada = await tx.locacao.updateMany({
+        where: { id: locacaoId, usuarioId, status: StatusLocacao.ATIVA },
+        data: { status: StatusLocacao.FINALIZADA, dataDevolucao: new Date() }
+      });
+
+      if (locacaoFinalizada.count === 0) {
+        throw new ApiError("Locação já finalizada.", 409);
+      }
+
+      await tx.veiculo.update({
+        where: { id: locacaoExistente.veiculoId },
+        data: { disponivel: true }
+      });
+
+      return await tx.locacao.findUnique({
+        where: { id: locacaoId },
+        select: {
+          id: true,
+          usuarioId: true,
+          veiculoId: true,
+          dataInicio: true,
+          dataPrevistaDevolucao: true,
+          valorTotal: true,
+          status: true,
+          veiculo: {
+            select: {
+              id: true,
+              marca: true,
+              modelo: true,
+              placa: true,
+              ano: true,
+              valorDiaria: true
+            }
+          }
+        }
+      });
+    });
+
+    return locacao;
+  }
 }
 
 module.exports = new LocacaoService();
