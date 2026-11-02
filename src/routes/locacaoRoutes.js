@@ -8,5 +8,6 @@ const router = express.Router();
 
 router.post("/locacoes", authMiddleware, validate(locacaoCreateSchema), locacaoController.create);
 router.get("/locacoes", authMiddleware, locacaoController.findMany);
+router.get("/locacoes/:id", authMiddleware, locacaoController.findById);
 
 module.exports = router;

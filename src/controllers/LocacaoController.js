@@ -14,6 +14,12 @@ class LocacaoController {
     const locacoes = await locacaoService.findMany(req.user.id, status, page, per);
     return res.status(200).json(locacoes);
   }
+
+  async findById(req, res) {
+    const { id } = req.params;
+    const locacao = await locacaoService.findById(id, req.user.id);
+    return res.status(200).json(locacao);
+  }
 }
 
 module.exports = new LocacaoController();

@@ -127,6 +127,42 @@ class LocacaoService {
       }
     }
   }
+
+  async findById(id, usuarioId) {
+    const locacaoId = Number(id);
+    if (!Number.isInteger(locacaoId) || locacaoId <= 0) {
+      throw new ApiError("O parâmetro 'id' deve ser um número inteiro positivo.", 400);
+    }
+
+    const locacao = await prisma.locacao.findFirst({
+      where: { id: locacaoId, usuarioId },
+      select: {
+          id: true,
+          usuarioId: true,
+          veiculoId: true,
+          dataInicio: true,
+          dataPrevistaDevolucao: true,
+          valorTotal: true,
+          status: true,
+          veiculo: {
+            select: {
+              id: true,
+              marca: true,
+              modelo: true,
+              placa: true,
+              ano: true,
+              valorDiaria: true
+            }
+          }
+        }
+    });
+
+    if (!locacao) {
+      throw new ApiError("Locação não encontrada.", 404);
+    }
+
+    return locacao;
+  }
 }
 
 module.exports = new LocacaoService();
