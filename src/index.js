@@ -4,6 +4,7 @@ const errorMiddleware = require("./middlewares/errorMiddleware");
 const authRouter = require("./routes/authRoutes");
 const usuarioRouter = require("./routes/usuarioRoutes");
 const veiculoRouter = require("./routes/veiculoRoutes");
+const locacaoRouter = require("./routes/locacaoRoutes");
 
 const PORT = process.env.PORT || 3000;
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(authRouter);
 app.use(usuarioRouter);
 app.use(veiculoRouter);
+app.use(locacaoRouter);
 
 app.use(errorMiddleware);
 
