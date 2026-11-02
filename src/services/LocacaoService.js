@@ -69,6 +69,64 @@ class LocacaoService {
 
     return locacao;
   }
+
+  async findMany(usuarioId, status, page, per) {
+    if (status && status !== "ativa" && status !== "finalizada") {
+      throw new ApiError("O parâmetro 'status' deve ser 'ativa' ou 'finalizada'.", 400);
+    }
+
+    const currentPage = Number(page);
+    const perPage = Number(per);
+
+    if (!Number.isInteger(currentPage) || currentPage < 1) {
+      throw new ApiError("O parâmetro 'page' deve ser um número inteiro positivo.", 400);
+    }
+
+    if (!Number.isInteger(perPage) || perPage < 1) {
+      throw new ApiError("O parâmetro 'per' deve ser um número inteiro positivo.", 400);
+    }
+
+    const where = { usuarioId, ...(status && { status: status.toUpperCase() }) };
+
+    const [locacoes, total] = await Promise.all([
+      prisma.locacao.findMany({
+        where,
+        orderBy: { id: "desc" },
+        skip: (currentPage - 1) * perPage,
+        take: perPage,
+        select: {
+          id: true,
+          usuarioId: true,
+          veiculoId: true,
+          dataInicio: true,
+          dataPrevistaDevolucao: true,
+          valorTotal: true,
+          status: true,
+          veiculo: {
+            select: {
+              id: true,
+              marca: true,
+              modelo: true,
+              placa: true,
+              ano: true,
+              valorDiaria: true
+            }
+          }
+        }
+      }),
+      prisma.locacao.count({ where })
+    ]);
+
+    return {
+      data: locacoes,
+      pagination: {
+        page: currentPage,
+        per: perPage,
+        total,
+        totalOfPages: Math.ceil(total / perPage)
+      }
+    }
+  }
 }
 
 module.exports = new LocacaoService();
