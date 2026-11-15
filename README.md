@@ -237,13 +237,19 @@ shopcar/
 - Node.js 18+ (recomendado 20+)
 - MySQL 8+ ou MariaDB 10.5+
 
-### 2. Instalar dependências
+### 2. Clone o repositório
+
+```bash
+git clone https://github.com/Makson19/shopcar_api.git
+```
+
+### 3. Instalar dependências
 
 ```bash
 npm install
 ```
 
-### 3. Configurar variáveis de ambiente
+### 4. Configurar variáveis de ambiente
 
 Copie o arquivo de exemplo e preencha os valores:
 
@@ -278,7 +284,7 @@ JWT_SECRET=
 
 > O runtime **não** usa `DATABASE_URL`: ele usa `DB_HOST`, `DB_USER`, `DB_PASSWORD` e `DB_NAME` através do `PrismaMariaDb`. Por isso as duas formas de configuração precisam estar corretas.
 
-### 4. Criar o banco e aplicar as migrations
+### 5. Criar o banco e aplicar as migrations
 
 Crie o banco no MySQL/MariaDB (ex.: `CREATE DATABASE shopcar;`) e rode:
 
@@ -294,7 +300,7 @@ Gere o client (necessário após instalar ou alterar o schema):
 npx prisma generate
 ```
 
-### 5. Iniciar o servidor
+### 6. Iniciar o servidor
 
 ```bash
 npm run dev
