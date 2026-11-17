@@ -54,7 +54,7 @@ class VeiculoService {
         skip: (currentPage - 1) * newPer,
         take: newPer,
       }),
-      prisma.veiculo.count()
+      prisma.veiculo.count({ where: disponivel ? { disponivel: isAvailable } : {} })
     ]);
 
     const totalOfPages = Math.ceil(total / per);
