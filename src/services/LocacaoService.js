@@ -94,25 +94,7 @@ class LocacaoService {
         orderBy: { id: "desc" },
         skip: (currentPage - 1) * perPage,
         take: perPage,
-        select: {
-          id: true,
-          usuarioId: true,
-          veiculoId: true,
-          dataInicio: true,
-          dataPrevistaDevolucao: true,
-          valorTotal: true,
-          status: true,
-          veiculo: {
-            select: {
-              id: true,
-              marca: true,
-              modelo: true,
-              placa: true,
-              ano: true,
-              valorDiaria: true
-            }
-          }
-        }
+        include: { veiculo: true }
       }),
       prisma.locacao.count({ where })
     ]);
